@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { Translations } from './services/translations';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,10 @@ import { TranslateService } from '@ngx-translate/core';
 export class AppComponent {
   param = { value: 'https://carloscaballero.io' };
 
-  constructor(private translateService: TranslateService) {
+  constructor(
+    private translateService: TranslateService,
+    public translations: Translations
+  ) {
     this.translateService.setDefaultLang('eng');
   }
   changeLanguage(language: string): void {

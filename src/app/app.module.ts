@@ -1,30 +1,31 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 import { AppComponent } from './app.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { Translations } from './services/translations';
+import { from } from 'rxjs';
+import { pluck } from 'rxjs/operators';
 
-// AoT requires an exported function for factories
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
+// Core.module
+export class WebpackTranslateLoader implements TranslateLoader {
+  getTranslation(lang: string) {
+    return from(import(`../assets/i18n/${lang}.ts`)).pipe(pluck('default'));
+  }
 }
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    HttpClientModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
+        useClass: WebpackTranslateLoader
       }
     })
   ],
-  providers: [],
+  providers: [Translations],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
